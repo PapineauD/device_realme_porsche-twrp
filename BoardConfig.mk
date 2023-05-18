@@ -54,15 +54,31 @@ TARGET_NO_BOOTLOADER := true
 TARGET_USES_UEFI := true
 
 # Kernel
-TARGET_NO_KERNEL := false
-TARGET_KERNEL_ARCH := $(TARGET_ARCH)
+BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_IMAGE_NAME := kernel
+BOARD_KERNEL_PAGESIZE := 4096
+BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200n8 androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 lpm_levels.sleep_disabled=1 video=vfb:640x400,bpp=32,memsize=3072000 msm_rtb.filter=0x237 service_locator.enable=1 androidboot.usbcontroller=a600000.dwc3 swiotlb=0 loop.max_part=7 cgroup.memory=nokmem,nosocket pcie_ports=compat loop.max_part=7 iptable_raw.raw_before_defrag=1 ip6table_raw.raw_before_defrag=1 kpti=off iptable_raw.raw_before_defrag=1 buildvariant=user
+BOARD_KERNEL_BASE          := 0x00000000
+BOARD_KERNEL_TAGS_OFFSET   := 0x00000100
+BOARD_KERNEL_OFFSET        := 0x00008000
+BOARD_KERNEL_SECOND_OFFSET := 0x00000000
+BOARD_RAMDISK_OFFSET       := 0x01000000
+BOARD_DTB_OFFSET           := 0x01f00000
 BOARD_BOOT_HEADER_VERSION := 3
+BOARD_KERNEL_SEPARATED_DTBO := true
+BOARD_MKBOOTIMG_ARGS += --base $(BOARD_KERNEL_BASE)
+BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
-
-TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/lahaina/kernel
-TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/lahaina/dtb.img
-BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/lahaina/dtbo.img
+BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --second_offset $(BOARD_KERNEL_SECOND_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
+BOARD_MKBOOTIMG_ARGS += --recovery_dtbo $(TARGET_PREBUILT_RECOVERY_DTBO)
+TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilts/kernel
+TARGET_PREBUILT_RECOVERY_DTBO := $(DEVICE_PATH)/prebuilts/dtbo.img
+TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilts/dtb.img
 
 # Platform
 TARGET_BOARD_PLATFORM := $(TARGET_BOOTLOADER_BOARD_NAME)
@@ -130,12 +146,10 @@ PLATFORM_SECURITY_PATCH := 2099-12-31
 VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
 
 # Extras
-BOARD_ROOT_EXTRA_FOLDERS := batinfo
 TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
-TARGET_VENDOR_PROP += $(DEVICE_PATH)/vendor.prop
 
 # Fstab
-TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery.fstab
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
 
 # TWRP specific build flags
 TARGET_RECOVERY_QCOM_RTC_FIX := true
@@ -145,33 +159,24 @@ TW_CUSTOM_CPU_TEMP_PATH := "/sys/devices/virtual/thermal/thermal_zone50/temp"
 TW_THEME := portrait_hdpi
 TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
 TW_QCOM_ATS_OFFSET := 1621580431500
-TW_DEFAULT_BRIGHTNESS := 420
-TW_MAX_BRIGHTNESS := 1024
+TW_DEFAULT_BRIGHTNESS := 2000
+TW_MAX_BRIGHTNESS := 4095
 TW_EXCLUDE_DEFAULT_USB_INIT := true
 TW_EXTRA_LANGUAGES := true
 TW_NO_EXFAT_FUSE := true
 TW_INCLUDE_REPACKTOOLS := true
 TW_INCLUDE_RESETPROP := true
 TW_NO_SCREEN_BLANK := true
-TW_Y_OFFSET := 115
-TW_H_OFFSET := -115
-TW_BATTERY_SYSFS_WAIT_SECONDS := 5
+TW_CUSTOM_BATTERY_POS := 740
+TW_CUSTOM_CLOCK_POS := 500
+TW_CUSTOM_CPU_POS := 180
+TW_FRAMERATE := 60
 
 TW_OVERRIDE_SYSTEM_PROPS := \
      "ro.build.date.utc;ro.bootimage.build.date.utc=ro.build.date.utc;ro.odm.build.date.utc=ro.build.date.utc;ro.product.build.date.utc=ro.build.date.utc;ro.system.build.date.utc=ro.build.date.utc;ro.system_ext.build.date.utc=ro.build.date.utc;ro.vendor.build.date.utc=ro.build.date.utc;ro.build.product;ro.build.fingerprint=ro.system.build.fingerprint;ro.build.version.incremental;ro.product.device=ro.product.system.device;ro.product.model=ro.product.system.model;ro.product.name=ro.product.system.name"
 
-TW_LOAD_VENDOR_MODULES := msm_drm.ko \
-    adsp_loader_dlkm.ko \
-    fts_touch_spi.ko \
-    focaltech_touch.ko \
-    hwid.ko \
-    leds-qti-flash.ko \
-    qti_battery_charger_main.ko \
-    xiaomi_touch.ko
-
-#BOARD_RECOVERY_KERNEL_MODULES_LOAD := $(TW_LOAD_VENDOR_MODULES)
-BOARD_RECOVERY_KERNEL_MODULES := $(strip $(shell for i in $(TW_LOAD_VENDOR_MODULES); do echo $(DEVICE_PATH)/prebuilt/$$i; done))
-TW_LOAD_VENDOR_MODULES := "msm_drm.ko adsp_loader_dlkm.ko fts_touch_spi_k8.ko fts_touch_spi.ko focaltech_touch.ko hwid.ko qti_battery_charger_main.ko qti_battery_charger_main_odin.ko texfat.ko tntfs.ko xiaomi_touch.ko led-class-flash.ko leds-qti-tri-led.ko leds-qti-flash.ko"
+BOARD_RECOVERY_KERNEL_MODULES_LOAD := $(TW_LOAD_VENDOR_MODULES)
+TW_LOAD_VENDOR_MODULES := "aw8697.ko ns.ko oplus_bsp_tp_notify.ko oplus_notify.ko service-locator.ko snd_event_dlkm.ko apr_dlkm.ko oplus_chg.ko q6_notifier_dlkm.ko adsp_loader_dlkm.ko msm_drm.ko phy-qcom-ufs.ko q6_pdr_dlkm.ko"
 
 # TWRP Debug Flags
 #TWRP_EVENT_LOGGING := true
@@ -183,3 +188,8 @@ TARGET_RECOVERY_DEVICE_MODULES += strace
 RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/strace
 #TARGET_RECOVERY_DEVICE_MODULES += twrpdec
 #RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/sbin/twrpdec
+
+# PBRP specific build flags
+PB_DISABLE_DEFAULT_TREBLE_COMP := true
+PB_DISABLE_DEFAULT_DM_VERITY := true
+PB_TORCH_PATH := "/sys/class/leds/led:torch_0"
