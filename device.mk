@@ -57,7 +57,15 @@ AB_OTA_PARTITIONS += \
     system_ext \
     vbmeta \
     vbmeta_system \
-    vendor
+    vendor \
+    my_bigball \
+    my_carrier \
+    my_engineering \
+    my_heytap \
+    my_manifest \
+    my_product \
+    my_region \
+    my_stock
 
 PRODUCT_PACKAGES += \
     otapreopt_script \
