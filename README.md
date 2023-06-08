@@ -1,7 +1,7 @@
 # device_realme_porsche-twrp
 ## Thanks SIDDK24 for original tree.
 ### para orangefox.
-### da maneira que esta, o boot é normal, porem otg por enquanto não é detectado.
+#### da maneira que esta, o boot é normal, porem otg por enquanto não é detectado.
 #### status da bateria -1
 apenas para REALME GT2 SNAP 888
 
