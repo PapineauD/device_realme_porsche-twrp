@@ -2,6 +2,8 @@
 external_storage.projid.enabled=1
 external_storage.casefold.enabled=1
 external_storage.sdcardfs.enabled=0
+ro.boot.dynamic_partitions=true
+persist.sys.isUsbOtgEnabled=true
 
 # Crypto
 ro.crypto.allow_encrypt_override=true
