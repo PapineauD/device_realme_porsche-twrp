@@ -48,6 +48,9 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
     export OF_ENABLE_LPTOOLS=1
     export FOX_DELETE_AROMAFM=1
     export OF_SUPPORT_OZIP_DECRYPTION=1
+    export OF_SCREEN_H=2400
+    export OF_STATUS_INDENT_LEFT=48
+    export OF_STATUS_INDENT_RIGHT=48
   
 # Display Settings
     export OF_HIDE_NOTCH=1
