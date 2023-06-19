@@ -47,6 +47,7 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
     export FOX_USE_NANO_EDITOR=1
     export OF_ENABLE_LPTOOLS=1
     export FOX_DELETE_AROMAFM=1
+    export OF_SUPPORT_OZIP_DECRYPTION=1
   
 # Display Settings
     export OF_HIDE_NOTCH=1
