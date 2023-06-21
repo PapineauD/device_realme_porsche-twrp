@@ -57,11 +57,7 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
     export OF_SCREEN_H=2400
     export OF_STATUS_INDENT_LEFT=48
     export OF_STATUS_INDENT_RIGHT=48
-  
-# Partitions Handler
-    export FOX_RECOVERY_SYSTEM_PARTITION="/dev/block/mapper/system"
-    export FOX_RECOVERY_VENDOR_PARTITION="/dev/block/mapper/vendor"
-  
+    
 # A/B-Related
     export OF_AB_DEVICE_WITH_RECOVERY_PARTITION=1
     export OF_VIRTUAL_AB_DEVICE=1
